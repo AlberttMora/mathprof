@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, analisis
+from app.core.database import Base, engine
+from app.api.v1 import auth, analisis, documentos
 
-app = FastAPI(title="MathProf API", version="1.0.0")
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="MathProf API", version="2.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,7 +17,8 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(analisis.router)
+app.include_router(documentos.router)
 
 @app.get("/")
 def root():
-    return {"message": "MathProf API corriendo"}
+    return {"message": "MathProf API v2.0 corriendo"}
