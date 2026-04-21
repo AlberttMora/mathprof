@@ -5,61 +5,72 @@ from app.services.rag_service import buscar_contexto
 
 llm = ChatGroq(
     api_key=settings.GROQ_API_KEY,
-    model="llama3-70b-8192"
+    model="llama-3.3-70b-versatile"
 )
 
 def _construir_prompt_con_contexto(contexto: str, ejercicio: str, pasos: str) -> str:
-    return f"""Eres un asistente matemático que corrige ejercicios según el método del profesor.
+    return f"""Eres un asistente matemático que corrige ejercicios de estudiantes universitarios.
 
-MATERIAL DEL PROFESOR:
+INSTRUCCIONES IMPORTANTES:
+- Corrige ÚNICAMENTE el ejercicio que te presento, no inventes otros ejercicios
+- Usa el material del profesor solo como referencia del método a seguir
+- Si el estudiante no escribió pasos, indícalo y muestra cómo debió resolverse
+- Responde siempre en español
+
+MATERIAL DEL PROFESOR (método de referencia):
 {contexto}
 
 EJERCICIO DEL ESTUDIANTE:
 {ejercicio}
 
 PASOS DEL ESTUDIANTE:
-{pasos}
+{pasos if pasos.strip() else "El estudiante no escribió pasos"}
 
-Analiza los pasos basándote ÚNICAMENTE en el material del profesor. Responde en este formato exacto:
+Responde EXACTAMENTE en este formato:
 
-TEMA: [nombre corto del tema detectado, ej: Límites por factorización]
+TEMA: [nombre corto del tema]
 
 ✅ PASOS CORRECTOS:
-[lista los pasos correctos y por qué]
+[qué hizo bien, o "Ninguno" si no hay pasos]
 
 ❌ PASOS INCORRECTOS:
-[lista los errores y por qué]
+[qué errores cometió y por qué, o "Ninguno" si todo está bien]
 
-📝 CÓMO DEBIÓ RESOLVERSE:
-[solución correcta según el método del profesor]
+📝 SOLUCIÓN CORRECTA:
+[solución paso a paso según el método del profesor]
 
-✔️ RESULTADO CORRECTO:
+✔️ RESULTADO:
 [resultado final]
 """
 
 def _construir_prompt_general(ejercicio: str, pasos: str) -> str:
-    return f"""Eres un asistente matemático experto. Analiza el siguiente ejercicio y procedimiento.
+    return f"""Eres un asistente matemático experto universitario.
+
+INSTRUCCIONES:
+- Corrige ÚNICAMENTE el ejercicio presentado
+- No inventes ejercicios adicionales
+- Responde en español
 
 EJERCICIO:
 {ejercicio}
 
 PASOS DEL ESTUDIANTE:
-{pasos}
+{pasos if pasos.strip() else "El estudiante no escribió pasos"}
 
-Analiza los pasos y responde en este formato exacto:
+Responde EXACTAMENTE en este formato:
 
-TEMA: [nombre corto del tema detectado]
+TEMA: [nombre corto del tema]
 
 ✅ PASOS CORRECTOS:
-[lista los pasos correctos]
+[qué hizo bien]
 
 ❌ PASOS INCORRECTOS:
-[lista los errores]
+[qué errores cometió]
 
-📝 CÓMO DEBIÓ RESOLVERSE:
-[solución correcta]
+📝 SOLUCIÓN CORRECTA:
+[solución paso a paso]
 
-✔️ RESULTADO CORRECTO:
+✔️ RESULTADO:
 [resultado final]
 """
 
@@ -71,6 +82,7 @@ def _extraer_tema(analisis: str) -> str | None:
 
 def analizar_ejercicio(usuario_id: int, ejercicio: str, pasos: str) -> dict:
     contexto = buscar_contexto(usuario_id, ejercicio)
+    print("CONTEXTO:", contexto[:300] if contexto else "NINGUNO")
 
     if not contexto:
         return {

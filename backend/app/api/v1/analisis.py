@@ -11,6 +11,8 @@ router = APIRouter(prefix="/analisis", tags=["analisis"])
 
 @router.post("/analizar", response_model=AnalisisResponse)
 def analizar(datos: AnalisisRequest, db: Session = Depends(get_db)):
+    print("EJERCICIO RECIBIDO:", datos.ejercicio)
+    print("PASOS RECIBIDOS:", datos.pasos)
     resultado = analizar_ejercicio(datos.usuario_id, datos.ejercicio, datos.pasos)
 
     if resultado["tiene_contexto"] or resultado.get("analisis"):
@@ -51,3 +53,4 @@ def historial(usuario_id: int, db: Session = Depends(get_db)):
 def actualizar_tema(ejercicio_id: int, datos: ActualizarTema, db: Session = Depends(get_db)):
     repo = EjercicioRepository(db)
     return repo.actualizar_tema(ejercicio_id, datos.tema_personalizado)
+
