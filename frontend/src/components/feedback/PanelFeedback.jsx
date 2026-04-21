@@ -1,117 +1,100 @@
-import React from 'react';
-import SectionLabel from '../ui/SectionLabel';
-// Importamos la utilidad en caso de que necesitemos limpiar o formatear algo visualmente
-import { renderizarLatex } from '../../utils/latexUtils';
+import Button from '../ui/Button'
 
-export default function PanelFeedback({ resultado, cargando, calculoRapido }) {
-  
-  // Estilos internos para mantener el componente autocontenido
-  const styles = {
-    container: {
-      padding: '1.5rem 1rem',
-      background: '#ffffff',
-      borderLeft: '1px solid #dee2e6',
-      height: '100%',
-      overflowY: 'auto',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '20px'
-    },
-    displayCalculadora: {
-      background: '#f1f3f5',
-      padding: '20px',
-      borderRadius: '12px',
-      border: '1px solid #e9ecef',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '28px',
-      fontWeight: '700',
-      color: '#212529',
-      transition: 'all 0.2s ease',
-      boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
-      minHeight: '80px',
-      textAlign: 'center'
-    },
-    statusBox: {
-      padding: '12px',
-      borderRadius: '8px',
-      fontSize: '14px',
-      lineHeight: '1.6',
-      marginTop: '10px'
-    }
-  };
+export default function PanelFeedback({ resultado, cargando, onAnalizarGeneral }) {
+  const renderLineas = (texto) =>
+    texto.split('\n').map((linea, i) => {
+      if (linea.startsWith('✅')) return (
+        <div key={i} style={{
+          padding: '6px 10px', borderRadius: 6, marginBottom: 4,
+          background: '#EAF3DE', color: '#3B6D11',
+          borderLeft: '3px solid #639922'
+        }}>{linea}</div>
+      )
+      if (linea.startsWith('❌')) return (
+        <div key={i} style={{
+          padding: '6px 10px', borderRadius: 6, marginBottom: 4,
+          background: '#FCEBEB', color: '#A32D2D',
+          borderLeft: '3px solid #E24B4A'
+        }}>{linea}</div>
+      )
+      if (linea.startsWith('📝') || linea.startsWith('✔️') || linea.startsWith('TEMA:')) return (
+        <div key={i} style={{
+          padding: '6px 10px', borderRadius: 6, marginBottom: 4,
+          background: '#EEEDFE', color: '#534AB7',
+          borderLeft: '3px solid #7F77DD'
+        }}>{linea}</div>
+      )
+      if (linea.trim() === '') return <div key={i} style={{ height: 6 }} />
+      return <div key={i}>{linea}</div>
+    })
 
   return (
-    <div style={styles.container}>
-      <div>
-        <SectionLabel>Resultado Rápido</SectionLabel>
-        <div style={{
-          ...styles.displayCalculadora,
-          color: calculoRapido ? '#0d6efd' : '#adb5bd',
-          border: calculoRapido ? '1px solid #cfe2ff' : '1px solid #e9ecef'
-        }}>
-          {calculoRapido ? `= ${calculoRapido}` : '---'}
-        </div>
-        <p style={{ fontSize: '11px', color: '#6c757d', marginTop: '8px', textAlign: 'center' }}>
-          {calculoRapido ? 'Cálculo automático detectado' : 'Esperando una expresión matemática...'}
-        </p>
+    <div style={{
+      borderLeft: '1px solid #dee2e6', background: 'white',
+      display: 'flex', flexDirection: 'column', overflow: 'hidden'
+    }}>
+      <div style={{
+        padding: '10px 1rem', borderBottom: '1px solid #dee2e6',
+        fontWeight: 500, fontSize: 13
+      }}>
+        Análisis del procedimiento
       </div>
 
-      <hr style={{ border: '0', borderTop: '1px solid #eee', margin: '10px 0' }} />
+      <div style={{
+        flex: 1, padding: '1rem', overflowY: 'auto',
+        display: 'flex', flexDirection: 'column', gap: 10
+      }}>
+        {cargando && (
+          <p style={{ textAlign: 'center', color: '#6c757d', marginTop: 20, fontSize: 13 }}>
+            Analizando tu procedimiento...
+          </p>
+        )}
 
-      <div>
-        <SectionLabel>Análisis de Procedimiento</SectionLabel>
-        
-        {cargando ? (
-          <div style={{ textAlign: 'center', padding: '20px' }}>
-            <div className="spinner" style={{ marginBottom: '10px' }}>⌛</div>
-            <p style={{ color: '#495057', fontSize: '14px' }}>IA analizando tus pasos...</p>
+        {!cargando && !resultado && (
+          <p style={{ color: '#6c757d', fontSize: 13, marginTop: 20, textAlign: 'center' }}>
+            Escribe tu ejercicio y pasos,<br />luego presiona "Analizar".
+          </p>
+        )}
+
+        {resultado && !resultado.tiene_contexto && !resultado.analisis && resultado.mensaje && (
+          <div>
+            <div style={{
+              padding: '10px 12px', borderRadius: 8, fontSize: 13,
+              background: '#EEEDFE', color: '#534AB7',
+              borderLeft: '3px solid #7F77DD', marginBottom: 12
+            }}>
+              <div style={{ fontWeight: 500, marginBottom: 4 }}>Sin material del profesor</div>
+              {resultado.mensaje}
+            </div>
+            <Button variant="secondary" fullWidth onClick={onAnalizarGeneral}>
+              Resolver con conocimiento general
+            </Button>
           </div>
-        ) : resultado ? (
-          <div style={{
-            ...styles.statusBox,
-            background: resultado.es_correcto ? '#d1e7dd' : '#f8d7da',
-            color: resultado.es_correcto ? '#0f5132' : '#842029',
-            border: `1px solid ${resultado.es_correcto ? '#badbcc' : '#f5c2c7'}`
-          }}>
-            <strong style={{ display: 'block', marginBottom: '5px' }}>
-              {resultado.es_correcto ? '✅ ¡Buen trabajo!' : '❌ Hay un detalle que revisar'}
-            </strong>
-            <p style={{ margin: 0 }}>{resultado.mensaje}</p>
-            
-            {/* Si el backend devuelve sugerencias adicionales (ej. pasos corregidos) */}
-            {resultado.sugerencia && (
-              <div style={{ 
-                marginTop: '10px', 
-                paddingTop: '10px', 
-                borderTop: '1px solid rgba(0,0,0,0.1)',
-                fontSize: '13px',
-                fontStyle: 'italic'
-              }}>
-                <strong>Sugerencia:</strong> {resultado.sugerencia}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div style={{
-            padding: '20px',
-            border: '2px dashed #e9ecef',
-            borderRadius: '8px',
-            textAlign: 'center',
-            color: '#adb5bd'
-          }}>
-            <p style={{ fontSize: '13px', margin: 0 }}>
-              Completa el ejercicio y los pasos, luego presiona <b>"Analizar procedimiento"</b> para recibir feedback.
-            </p>
+        )}
+
+        {resultado && resultado.analisis && (
+          <div>
+            <div style={{
+              fontSize: 13, lineHeight: 1.9, color: '#212529',
+              whiteSpace: 'pre-wrap', fontFamily: 'inherit'
+            }}>
+              {renderLineas(resultado.analisis)}
+            </div>
+
+            <div style={{
+              marginTop: 16, paddingTop: 12,
+              borderTop: '1px solid #dee2e6'
+            }}>
+              <p style={{ fontSize: 11, color: '#adb5bd', marginBottom: 8 }}>
+                ¿El análisis no usa el método correcto?
+              </p>
+              <Button variant="secondary" fullWidth onClick={onAnalizarGeneral}>
+                Analizar con conocimiento general
+              </Button>
+            </div>
           </div>
         )}
       </div>
-
-      {/* Footer del panel para tips rápidos */}
-      <div style={{ marginTop: 'auto', fontSize: '11px', color: '#ced4da' }}>
-        Tip: Puedes usar ^ para potencias y / para fracciones.
-      </div>
     </div>
-  );
+  )
 }

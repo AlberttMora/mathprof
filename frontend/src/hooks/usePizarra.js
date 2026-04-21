@@ -2,14 +2,8 @@ import { useRef } from 'react'
 import { usePizarraStore } from '../store/usePizarraStore'
 import { analisisApi } from '../api/analisisApi'
 
-/**
- * usePizarra — Controller principal de la pizarra.
- * Separa lógica de negocio de la vista.
- * activeEditorRef rastrea cuál editor tiene el foco para inserción correcta.
- */
 export const usePizarra = () => {
   const {
-    ejercicio, setEjercicio,
     pasos, setPasos,
     resultado, setResultado,
     cargando, setCargando, limpiar
@@ -18,7 +12,6 @@ export const usePizarra = () => {
   const ejercicioEditorRef = useRef(null)
   const activeEditorRef = useRef(null)
 
-  // Inserta en el editor que tenga foco actualmente
   const insertarSimbolo = (latex) => {
     const el = activeEditorRef.current
     if (!el) return
@@ -27,8 +20,11 @@ export const usePizarra = () => {
   }
 
   const analizar = async () => {
-    const ejercicioLatex = ejercicioEditorRef.current?.value || ejercicio
-    if (!ejercicioLatex.trim()) return
+    const ejercicioLatex = ejercicioEditorRef.current?.value || ''
+    if (!ejercicioLatex.trim()) {
+      alert('Escribe un ejercicio primero')
+      return
+    }
 
     setCargando(true)
     setResultado(null)
@@ -43,7 +39,7 @@ export const usePizarra = () => {
   }
 
   const analizarConKnowledgeGeneral = async () => {
-    const ejercicioLatex = ejercicioEditorRef.current?.value || ejercicio
+    const ejercicioLatex = ejercicioEditorRef.current?.value || ''
     setCargando(true)
     try {
       const data = await analisisApi.analizarGeneral(1, ejercicioLatex, pasos)
@@ -61,8 +57,7 @@ export const usePizarra = () => {
   }
 
   return {
-    ejercicio, pasos, resultado, cargando,
-    setEjercicio, setPasos,
+    pasos, setPasos, resultado, cargando,
     insertarSimbolo, analizar, analizarConKnowledgeGeneral,
     limpiarTodo, ejercicioEditorRef, activeEditorRef
   }
