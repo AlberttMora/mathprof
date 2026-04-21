@@ -1,13 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>frontend</title>
+    <link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive-static.css" />
   </head>
+
   <body>
     <div id="root"></div>
+
+    <!-- 🔥 Scripts ANTES del React -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js"></script>
+
+    <!-- React -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

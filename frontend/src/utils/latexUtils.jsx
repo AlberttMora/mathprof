@@ -1,0 +1,96 @@
+export const CATEGORIAS_SIMBOLOS = {
+  'Básicos': [
+    { label: '=', latex: '=' },
+    { label: '+', latex: '+' },
+    { label: '−', latex: '-' },
+    { label: '×', latex: '\\times' },
+    { label: '÷', latex: '\\div' },
+    { label: '±', latex: '\\pm' },
+    { label: '≠', latex: '\\ne' },
+    { label: '≈', latex: '\\approx' },
+  ],
+  'Comparación': [
+    { label: '<', latex: '<' },
+    { label: '>', latex: '>' },
+    { label: '≤', latex: '\\le' },
+    { label: '≥', latex: '\\ge' },
+    { label: '∈', latex: '\\in' },
+    { label: '∉', latex: '\\notin' },
+  ],
+  'Límites': [
+    { label: 'lim', latex: '\\lim' },
+    { label: '→', latex: '\\to' },
+    { label: '∞', latex: '\\infty' },
+    { label: 'lim x→0', latex: '\\lim_{x\\to0}' },
+    { label: 'lim x→∞', latex: '\\lim_{x\\to\\infty}' },
+  ],
+  'Fracciones': [
+    { label: 'a/b', latex: '\\frac' },
+    { label: '1/2', latex: '\\frac{1}{2}' },
+    { label: '1/x', latex: '\\frac{1}{x}' },
+  ],
+  'Cálculo': [
+    { label: '∫', latex: '\\int' },
+    { label: '∂', latex: '\\partial' },
+    { label: '∇', latex: '\\nabla' },
+    { label: "d/dx", latex: '\\frac{d}{dx}' },
+    { label: "f'(x)", latex: "f'(x)" },
+  ],
+  'Potencias y raíces': [
+    { label: 'x²', latex: '^2' },
+    { label: 'x³', latex: '^3' },
+    { label: 'xⁿ', latex: '^n' },
+    { label: '√', latex: '\\sqrt' },
+    { label: '∛', latex: '\\sqrt[3]{}' },
+  ],
+  'Trigonométricos': [
+    { label: 'sin', latex: '\\sin' },
+    { label: 'cos', latex: '\\cos' },
+    { label: 'tan', latex: '\\tan' },
+    { label: 'sec', latex: '\\sec' },
+    { label: 'csc', latex: '\\csc' },
+    { label: 'cot', latex: '\\cot' },
+    { label: 'arcsin', latex: '\\arcsin' },
+    { label: 'arccos', latex: '\\arccos' },
+    { label: 'arctan', latex: '\\arctan' },
+  ],
+  'Logarítmicos': [
+    { label: 'ln', latex: '\\ln' },
+    { label: 'log', latex: '\\log' },
+    { label: 'log₂', latex: '\\log_2' },
+    { label: 'eˣ', latex: 'e^x' },
+  ],
+  'Conjuntos y lógica': [
+    { label: '∪', latex: '\\cup' },
+    { label: '∩', latex: '\\cap' },
+    { label: '∅', latex: '\\emptyset' },
+    { label: '∀', latex: '\\forall' },
+    { label: '∃', latex: '\\exists' },
+    { label: '⇒', latex: '\\Rightarrow' },
+    { label: '⟺', latex: '\\Leftrightarrow' },
+  ],
+  'Griegos': [
+    { label: 'α', latex: '\\alpha' },
+    { label: 'β', latex: '\\beta' },
+    { label: 'γ', latex: '\\gamma' },
+    { label: 'δ', latex: '\\delta' },
+    { label: 'ε', latex: '\\epsilon' },
+    { label: 'θ', latex: '\\theta' },
+    { label: 'λ', latex: '\\lambda' },
+    { label: 'μ', latex: '\\mu' },
+    { label: 'π', latex: '\\pi' },
+    { label: 'σ', latex: '\\sigma' },
+    { label: 'φ', latex: '\\phi' },
+    { label: 'ω', latex: '\\omega' },
+  ],
+  'Sumatorias': [
+    { label: 'Σ', latex: '\\sum' },
+    { label: 'Π', latex: '\\prod' },
+    { label: 'n!', latex: 'n!' },
+  ],
+}
+
+export const renderizarLatex = (texto) => {
+  if (!texto) return null
+  return texto
+}
